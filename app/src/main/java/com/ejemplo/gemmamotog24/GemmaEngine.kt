@@ -46,11 +46,14 @@ class GemmaEngine(private val context: Context) {
         return true
     }
 
-    fun generateStream(prompt: String, onToken: (String, Boolean) -> Unit) {
+    fun generate(prompt: String): String {
         val engine = inferenceEngine ?: throw IllegalStateException("Modelo no inicializado")
-        engine.generateResponseAsync(prompt) { partialText, done ->
-            onToken(partialText, done)
-        }
+        return engine.generateResponse(prompt)
+    }
+
+    fun generateStream(prompt: String, onToken: (String, Boolean) -> Unit) {
+        val response = generate(prompt)
+        onToken(response, true)
     }
 
     fun close() {
